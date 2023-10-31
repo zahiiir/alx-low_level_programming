@@ -2,42 +2,44 @@
 #include <stdlib.h>
 
 /**
-* argstostr - concatène tous les arguments passés en paramètre
-* @ac: nombre d'arguments
-* @av: tableau de pointeurs vers les arguments
-* Return: pointeur vers la nouvelle chaîne de caractères concaténée
-*/
-char *argstostr(int ac, char **av)
-{
-    int i, n, r = 0, l = 0;
-    char *str;
+ * argstostr - concatenates all the arguments given by the user
+ * @ac: number of arguments
+ * @av: array of pointers to the arguments
+ * Return: pointer to the concatenated string, or NULL if it fails
+ */
+char *argstostr(int ac, char **av) {
+  int i, j, total_length = 0;
+  char *str;
 
-    if (ac == 0 || av == NULL)
-        return (NULL);
+  if (ac == 0 || av == NULL) {
+    return NULL;
+  }
 
-    for (i = 0; i < ac; i++)
-    {
-        for (n = 0; av[i][n]; n++)
-            l++;
-        l++;
+  // Calculate the total length of the concatenated string.
+  for (i = 0; i < ac; i++) {
+    total_length += strlen(av[i]) + 1; // add 1 for the newline character
+  }
+
+  // Allocate memory for the concatenated string.
+  str = malloc(sizeof(char) * (total_length + 1));
+  if (str == NULL) {
+    return NULL;
+  }
+
+  // Concatenate all the arguments.
+  i = 0;
+  j = 0;
+  while (i < ac) {
+    while (av[i][j] != '\0') {
+      str[j] = av[i][j];
+      j++;
     }
+    str[j++] = '\n';
+    i++;
+  }
 
-    str = malloc(sizeof(char) * (l + 1));
+  // Add the terminating null character.
+  str[j] = '\0';
 
-    if (str == NULL)
-        return (NULL);
-
-    for (i = 0; i < ac; i++)
-    {
-        for (n = 0; av[i][n]; n++)
-        {
-            str[r] = av[i][n];
-            r++;
-        }
-        str[r] = '\n'; // Ajoute le caractère de nouvelle ligne à la position r
-        r++;
-    }
-
-    str[r] = '\0'; // Assure que la chaîne est correctement terminée par le caractère nul
-    return (str);
+  return str;
 }
